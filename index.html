@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Professional AI Training & Fine-Tuning Cost Calculator Online</title>
+<meta name="description" content="Free engineering simulator for neural network fine-tuning budgets. Calculate costs for LoRA, QLoRA, cloud GPU rentals (H100/A100), and business automation ROI.">
+<style>
+:root{--primary:#4f46e5;--primary-hover:#4338ca;--success:#16a34a;--danger:#dc2626;--bg:#f8fafc;--card-bg:#ffffff;--text:#0f172a;--text-muted:#64748b;--border:#e2e8f0;--accent:#ea580c;--purple:#7c3aed;--indigo:#6366f1}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:var(--bg);color:var(--text);padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+.wrapper{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:530px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05)}
+h1{font-size:21px;font-weight:700;margin-bottom:4px;text-align:center;letter-spacing:-0.025em}
+.subtitle{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:20px}
+.live-meter{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:20px;text-align:center}
+.meter-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;letter-spacing:0.05em}
+.bar-container{background:var(--border);border-radius:20px;height:12px;width:100%;overflow:hidden;position:relative}
+.bar-fill{background:var(--primary);width:30%;height:100%;transition:all 0.4s ease}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:20px;border:1px solid var(--border)}
+.tab-btn{padding:10px 2px;background:none;border:none;border-radius:8px;font-size:11px;font-weight:700;color:var(--text-muted);cursor:pointer;transition:all 0.2s;text-align:center}
+.tab-btn.active{background:var(--card-bg);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.group{margin-bottom:16px}
+.radio-group{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.radio-label{border:1px solid var(--border);padding:10px 4px;border-radius:8px;text-align:center;font-size:12px;font-weight:700;color:var(--text-muted);cursor:pointer;transition:all 0.2s}
+.radio-group input[type="radio"]{display:none}
+.radio-group input[type="radio"]:checked + .radio-label{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 2px 4px rgba(79,70,229,0.15)}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
+select,input[type="number"]{width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;font-size:15px;background:#fff;color:var(--text);transition:border 0.2s}
+select:focus,input:focus{border-color:var(--primary);outline:none}
+input[type="range"]{width:100%;margin:8px 0;cursor:pointer}
+.range-val{font-size:14px;font-weight:700;color:var(--primary);float:right}
+.calc-btn{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;box-shadow:0 4px 6px -1px rgba(79,70,229,0.2);transition:background 0.2s}
+.calc-btn:hover{background:var(--primary-hover)}
+.skynet-box{background:#fee2e2;border:1px solid #fca5a5;border-radius:12px;padding:14px;margin-top:20px;display:none}
+.skynet-title{font-size:12px;font-weight:700;color:var(--danger);margin-bottom:6px;text-transform:uppercase;text-align:center;letter-spacing:0.05em}
+.results{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:20px;display:none}
+.res-title{font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-align:center;text-transform:uppercase;letter-spacing:0.05em}
+.res-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px dashed var(--border);align-items:center}
+.res-row:last-child{border-bottom:none}
+.res-val{font-weight:700;color:var(--primary);text-align:right;max-width:65%}
+.res-val.loss{color:var(--danger)}
+.ad{display:none;margin-top:15px;min-height:90px;text-align:center;justify-content:center;align-items:center;width:100%}
+.partner-btn{display:block;width:100%;padding:11px;background:#fff;border:1px solid var(--purple);color:var(--purple);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;text-align:center;margin-top:12px;text-decoration:none}
+.partner-btn:hover{background:var(--purple);color:#fff}
+.seo-text{font-size:12px;color:var(--text-muted);margin-top:24px;text-align:justify;line-height:1.4;border-top:1px solid var(--border);padding-top:16px;display:none}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<h1>AI Training Simulator</h1>
+<div class="subtitle">Professional Compute Audit for LLM Fine-Tuning & GPU Clusters</div>
+
+<div class="live-meter">
+<div class="meter-label">Compute Matrix Status: <span id="live-preview-zone">Initialization</span></div>
+<div class="bar-container"><div class="bar-fill" id="bar-fill"></div></div>
+</div>
+
+<div class="tabs">
+<button class="tab-btn active" onclick="switchTab('dataset', this)">Data & Strategy</button>
+<button class="tab-btn" onclick="switchTab('compute', this)">GPU Cluster</button>
+<button class="tab-btn" onclick="switchTab('roi', this)">Business ROI</button>
+</div>
+<!-- TAB 1: DATA & STRATEGY -->
+<div id="tab-dataset" class="tab-content active">
+<div class="group">
+<label>Training Methodology (Architecture)</label>
+<div class="radio-group">
+<input type="radio" id="strategy-full" name="strategy" value="full" checked onchange="updatePreview()">
+<label for="strategy-full" class="radio-label">Full Tuning</label>
+<input type="radio" id="strategy-lora" name="strategy" value="lora" onchange="updatePreview()">
+<label for="strategy-lora" class="radio-label">LoRA (16-bit)</label>
+<input type="radio" id="strategy-qlora" name="strategy" value="qlora" onchange="updatePreview()">
+<label for="strategy-qlora" class="radio-label">QLoRA (4-bit)</label>
+</div>
+</div>
+<div class="group">
+<label for="dataset-size">Initial Dataset Size (GB) <span class="range-val" id="dataset-val">10</span></label>
+<input type="range" id="dataset-size" min="1" max="1000" value="10" oninput="document.getElementById('dataset-val').innerText=this.value; updatePreview();">
+</div>
+<div class="group">
+<label for="data-noise">Dataset Noise & Filtration Depth (%) <span class="range-val" id="noise-val">20%</span></label>
+<input type="range" id="data-noise" min="0" max="80" value="20" step="5" oninput="document.getElementById('noise-val').innerText=this.value+'%'; updatePreview();">
+</div>
+<div class="group">
+<label for="epochs">Training Epochs <span class="range-val" id="epochs-val">3</span></label>
+<input type="range" id="epochs" min="1" max="50" value="3" oninput="document.getElementById('epochs-val').innerText=this.value; updatePreview();">
+</div>
+</div>
+
+<!-- TAB 2: GPU CLUSTER -->
+<div id="tab-compute" class="tab-content">
+<div class="group">
+<label for="gpu-type">Compute Chip (GPU Node)</label>
+<select id="gpu-type" onchange="updatePreview()">
+<option value="h100">NVIDIA H100 SXM (Elite Cloud)</option>
+<option value="a100">NVIDIA A100 (Industry Standard)</option>
+<option value="rtx4090">NVIDIA RTX 4090 (Consumer Node)</option>
+</select>
+</div>
+<div class="group">
+<label for="gpu-count">Cluster Size (GPU Count) <span class="range-val" id="gpu-count-val">8</span></label>
+<input type="range" id="gpu-count" min="1" max="64" value="8" oninput="document.getElementById('gpu-count-val').innerText=this.value; updatePreview();">
+</div>
+<div class="group">
+<label for="infra-type">Infrastructure Provider</label>
+<select id="infra-type" onchange="updatePreview()">
+<option value="bare-metal">Bare Metal Compute (Vast.ai / RunPod)</option>
+<option value="cloud-api">Enterprise Managed API (OpenAI Fine-Tuning)</option>
+</select>
+</div>
+</div>
+
+<!-- TAB 3: BUSINESS ROI -->
+<div id="tab-roi" class="tab-content">
+<div class="group">
+<label for="engineer-salary">Data Scientist / Engineer Monthly Salary ($)</label>
+<input type="number" id="engineer-salary" value="12000" min="1" max="250000" oninput="updatePreview()">
+</div>
+<div class="group">
+<label for="legacy-spend">Legacy Spend on Raw APIs Without Fine-Tuning (Monthly $)</label>
+<input type="number" id="legacy-spend" value="8000" min="1" max="250000" oninput="updatePreview()">
+</div>
+</div>
+
+<button class="calc-btn" onclick="calculateAiMetrics()">Execute Compute Audit</button>
+
+<div class="results" id="results-box">
+<div class="res-title">Engineering Financial Ledger</div>
+<div class="res-row"><span>Filtered Dataset Production Size:</span><span class="res-val" id="res-clean-data">0 GB</span></div>
+<div class="res-row"><span>Effective Compute Output (NVLink Tax):</span><span class="res-val" id="res-nvlink">100%</span></div>
+<div class="res-row"><span>Total Compute Overhead (Training Cost):</span><span class="res-val" id="res-infra">$0</span></div>
+<div class="res-row" id="payback-row" style="display:none;"><span>Infrastructure Payback Horizon:</span><span class="res-val" id="res-payback" style="color:var(--purple)">0</span></div>
+<div class="res-row"><span>Net Budget Savings (Annualized):</span><span class="res-val" id="res-savings" style="color:var(--success)">$0</span></div>
+<div class="res-row"><span>AI Architecture Return on Investment (ROI):</span><span class="res-val" id="res-roi">0%</span></div>
+<a href="https://runpod.io" target="_blank" class="partner-btn" id="partner-link">🤖 Deploy Cluster Instance on RunPod</a>
+</div>
+
+<div class="skynet-box" id="skynet-container">
+<div class="skynet-title">🔮 Overfitting Matrix & Skynet Index</div>
+<div class="res-row" style="border-bottom:none; color:#991b1b; font-size:12px; text-align:justify;"><span id="skynet-verdict">Execute compute audit to evaluate neural network architecture stability.</span></div>
+</div>
+
+<div id="ads" class="ad"><div id="container-e8c895e6c70ade8e4ef4a72354f42e97"></div></div>
+
+<div class="seo-text" id="seo-box">
+Our professional online AI training cost and fine-tuning calculator provides granular estimates for custom language model optimization schedules. The analytics engine evaluates dataset physical dimensions alongside filtration leakage coefficients. Core sub-routines process LoRA and QLoRA (4-bit quantization) memory compression weights, computing distributed grid parallelism penalties introduced by hardware interconnect limits (NVLink scaling up to 64 dedicated GPU nodes including NVIDIA H100, A100, and RTX 4090 configurations). Compare raw bare-metal hosting architectures across RunPod and Vast.ai instances against institutional managed API tiers, mapping structural return on investment (ROI) metrics while mitigating machine overfitting thresholds. Every computation compiles 100% locally in-browser.
+</div>
+</div>
+<script>
+let currentTab = 'dataset';
+
+// Active compute node rental data (USD per chip/hour, valid for late 2026)
+const gpuPricesUSD = {
+  h100: { bareMetal: 2.20, cloudApi: 4.50 },
+  a100: { bareMetal: 1.10, cloudApi: 2.80 },
+  rtx4090: { bareMetal: 0.40, cloudApi: 0.90 }
+};
+
+// Computing output values in TFLOPS (Multi-GPU interconnect calculations)
+const gpuTflops = { h100: 67, a100: 19, rtx4090: 83 };
+
+function switchTab(tabName, btn) {
+  currentTab = tabName;
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const contents = document.querySelectorAll('.tab-content');
+  contents.forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  updatePreview();
+}
+
+function calculateAllAiMetrics() {
+  // 1. Data & Strategy Architecture
+  const strategy = document.querySelector('input[name="strategy"]:checked').value;
+  const datasetSize = parseFloat(document.getElementById('dataset-size').value);
+  const dataNoise = parseFloat(document.getElementById('data-noise').value);
+  const epochs = parseFloat(document.getElementById('epochs').value);
+
+  const cleanDatasetSize = datasetSize * (1 - dataNoise / 100);
+
+  // 2. GPU Cluster Parameters
+  const gpuType = document.getElementById('gpu-type').value;
+  const gpuCount = parseInt(document.getElementById('gpu-count').value);
+  const infraType = document.getElementById('infra-type').value;
+
+  // NVLink / InfiniBand Multi-GPU data transfer efficiency penalty matrix
+  let nvlinkEfficiency = 1.00;
+  if (gpuCount > 1 && gpuCount <= 8) nvlinkEfficiency = 0.92;
+  else if (gpuCount > 8 && gpuCount <= 32) nvlinkEfficiency = 0.85;
+  else if (gpuCount > 32) nvlinkEfficiency = 0.76;
+
+  const pricePerHourUSD = infraType === 'bare-metal' ? gpuPricesUSD[gpuType].bareMetal : gpuPricesUSD[gpuType].cloudApi;
+
+  // Parameter compression scalar (LoRA / QLoRA memory optimization)
+  let strategyModifier = 1.00;
+  if (strategy === 'lora') strategyModifier = 0.25;
+  else if (strategy === 'qlora') strategyModifier = 0.12;
+
+  // Algorithmic estimation of training window based on hardware TFLOPS
+  const baseComputeUnits = (cleanDatasetSize * epochs * 4) * strategyModifier;
+  const effectiveClusterTflops = gpuTflops[gpuType] * gpuCount * nvlinkEfficiency;
+  const trainingHours = Math.max(1, Math.ceil((baseComputeUnits * 1000) / effectiveClusterTflops));
+
+  const totalComputeCostUSD = trainingHours * pricePerHourUSD * gpuCount;
+
+  // 3. Venture Capital & ROI Ledger
+  const engineerSalary = parseFloat(document.getElementById('engineer-salary').value) || 0;
+  const legacySpendMonth = parseFloat(document.getElementById('legacy-spend').value) || 0;
+
+  const totalProjectCostUSD = totalComputeCostUSD + engineerSalary;
+  const legacySpendYear = legacySpendMonth * 12;
+
+  const netSavingsYear = legacySpendYear - totalProjectCostUSD;
+  const roiValue = totalProjectCostUSD > 0 ? (netSavingsYear / totalProjectCostUSD) * 100 : 0;
+
+  return {
+    cleanData: cleanDatasetSize.toFixed(1) + " GB",
+    nvlink: Math.round(nvlinkEfficiency * 100) + "%",
+    infra: Math.round(totalComputeCostUSD).toLocaleString('en-US'),
+    savings: Math.round(netSavingsYear).toLocaleString('en-US'),
+    roi: Math.round(roiValue),
+    epochs: epochs,
+    strategy: strategy,
+    totalCostUSD: totalProjectCostUSD
+  };
+}
+
+function updatePreview() {
+  const data = calculateAllAiMetrics();
+  if (!data) return;
+
+  let zone = "Enterprise Fine-Tuning";
+  let color = "var(--primary)";
+  let pct = 65;
+
+  if (data.roi < 5 || data.epochs > 15) {
+    zone = "Overfitting Venture Alert (Financial Bubble)";
+    color = "var(--danger)";
+    pct = 15;
+  } else if (data.strategy === 'qlora') {
+    zone = "Maximum Optimization (4-bit)";
+    color = "var(--purple)";
+    pct = 95;
+  } else if (data.totalCostUSD > 5000) {
+    zone = "Critical Cluster Load Warning";
+    color = "var(--accent)";
+    pct = 45;
+  }
+
+  const preview = document.getElementById('live-preview-zone');
+  preview.innerText = zone; 
+  preview.style.color = color;
+
+  const fill = document.getElementById('bar-fill');
+  fill.style.width = pct + '%'; 
+  fill.style.background = color;
+
+  // On-the-fly dynamic partner-link masquerade (Vast vs RunPod native routing)
+  const pLink = document.getElementById('partner-link');
+  if (pLink) {
+    const gpuType = document.getElementById('gpu-type').value;
+    if (gpuType === 'rtx4090') {
+      pLink.innerText = "🤖 Deploy RTX 4090 Nodes on Vast.ai";
+      pLink.href = "https://vast.ai";
+    } else {
+      pLink.innerText = "🤖 Spin Up H100 Cluster on RunPod";
+      pLink.href = "https://runpod.io";
+    }
+  }
+}
+
+window.onload = function() {
+  updatePreview();
+};
+
+function showAds() {
+  const c = document.getElementById('ads');
+  if (!window.adScriptLoaded) {
+    window.atOptions = {
+      'key': 'e8c895e6c70ade8e4ef4a72354f42e97',
+      'format': 'iframe',
+      'height': 90,
+      'width': 728,
+      'params': {}
+    };
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.async = !0;
+    s.src = ['https://', 'bagelstoppage.', 'com/', 'e8c895e6c70ade8e4ef4a72354f42e97/', 'invoke.js'].join('');
+    c.appendChild(s);
+    window.adScriptLoaded = !0;
+  }
+  c.style.display = 'flex';
+}
+
+function calculateAiMetrics() {
+  const data = calculateAllAiMetrics();
+  if (!data) return;
+
+  document.getElementById('res-clean-data').innerText = data.cleanData;
+  document.getElementById('res-nvlink').innerText = data.nvlink;
+  document.getElementById('res-infra').innerText = "\$" + data.infra;
+  document.getElementById('res-savings').innerText = (parseInt(data.savings.replace(/,/g, '')) > 0 ? "" : "") + "\$" + data.savings;
+  document.getElementById('res-roi').innerText = (data.roi > 0 ? "+" : "") + data.roi + "%";
+
+  let verdict = `Cluster alignment is stable. Gradient descent optimization via ${data.strategy.toUpperCase()} framework is verified. Interconnect layer maintains safe operational bandwidth parameters.`;
+  const rawSavings = parseInt(data.savings.replace(/[^0-9-]/g, ''));
+  
+  if (data.epochs > 15) {
+    verdict = `🚨 OVERFITTING FINANCIAL BLACK HOLE: Compute runtime pushed to ${data.epochs} epochs! The model will strictly memorize the dataset, breaking performance on un-vetted production inputs. You are essentially throwing venture capital directly at cloud providers.`;
+  } else if (data.strategy === 'qlora') {
+    verdict = `🏴‍☠️ TECH SOVEREIGNTY MODE (4-BIT): QLoRA configuration collapsed memory threshold requirements by 88%. Industrial fine-tuning workflows are successfully executed via commodity RTX 4090 configurations, bypassing institutional gatekeepers completely.`;
+  } else if (rawSavings < 0) {
+    verdict = `⚠️ STRUCTURAL INFRASTRUCTURE LOSS: Internal data engineering salaries combined with dedicated GPU rental overhead surpass raw API expenses. It remains mathematically sound to revert to vanilla out-of-the-box foundation layers.`;
+  }
+
+  document.getElementById('skynet-verdict').innerText = verdict;
+  document.getElementById('results-box').style.display = 'block';
+  document.getElementById('skynet-container').style.display = 'block';
+  updatePreview();
+  showAds();
+}
+</script>
+</body>
+</html>
